@@ -1,0 +1,31 @@
+<h1>Spot</h1>
+
+<h2>Services</h2>
+<ul>
+    {% for service in services %}
+    <li>
+        <h3>{{ service.name }}</h3>
+        <ul>
+            {% if service.home %}
+                <li><a href={{ service.home }} target='_blank'>Home</a></li>
+            {% endif %}
+
+            {% if service.repository %}
+                <li><a href={{ service.repository }} target='_blank'>Repository</a></li>
+            {% endif %}
+
+            {% if service.deploymentPipeline %}
+                <li><a href={{ service.deploymentPipeline }} target='_blank'>Deployment Pipeline</a></li>
+            {% endif %}
+
+            {% if service.image %}
+                <li><a href={{ service.image }} target='_blank'>Image</a></li>
+            {% endif %}
+            
+            {% if service.documentation %}
+                <li><a href={{ service.documentation }} target='_blank'>Documentation</a></li>
+            {% endif %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
