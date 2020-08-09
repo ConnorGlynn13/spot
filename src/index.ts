@@ -1,40 +1,26 @@
 import express from 'express'
 import nunjucks from 'nunjucks'
+import mongoose, { Schema } from 'mongoose'
+import { Service } from './models/Service'
+import { harvestGithubUserRepositories } from './harvesters'
 
 const app = express()
 const PORT = process.env.PORT || '3000'
+const dbUrl = 'mongodb://127.0.0.1:27017/spot-harvesters-github-dev'
+mongoose.connect(dbUrl, { useNewUrlParser: true,  useUnifiedTopology: true })
+const db = mongoose.connection
 
 nunjucks.configure('./public/views', {
     autoescape: true,
     express: app
 })
 
-app.get('/', (request, response) => {
-    return response.render('index.njk', getServices())
+app.get('/', async (request, response) => {
+    const services = await Service.find()
+    response.render('index.njk', {services})
 })
 
-const getServices = () => {
-    return {
-        services: [
-            {
-                name: 'prisonstaffhub',
-                home: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth/login',
-                repository: 'https://github.com/ministryofjustice/prisonstaffhub',
-                deploymentPipeline: '',
-                image: 'https://hub.docker.com/r/mojdigitalstudio/prisonstaffhub',
-                documentation: '',
-            },
-            {
-                name: 'something else',
-                home: '',
-                repository: '',
-                deploymentPipeline: '',
-                image: '',
-                documentation: '',
-            },
-        ]
-    }
-}
+harvestGithubUserRepositories('ConnorGlynn13', 1, 10)
 
 app.listen(PORT, () => {
     console.log(`Server listening on port: ${PORT}`)
